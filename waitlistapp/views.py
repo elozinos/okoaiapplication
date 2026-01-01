@@ -15,13 +15,13 @@ def join_waitlist(request):
     except json.JSONDecodeError:
         return JsonResponse({'error': 'Invalid JSON'}, status=400)
 
-    # 3. Define all required field
+    # 3. Define all required fields 
     required_fields = [
-        'full_name',
-        'phone_number',
-        'location',
-        'farm_size',
-        'farming_type'  
+        'full_name', 
+        'phone_number', 
+        'location', 
+        'farm_size', 
+        'farming_type'
     ]
 
     # 4. Check if any fields are missing
@@ -29,19 +29,25 @@ def join_waitlist(request):
         if not data.get(field):
             return JsonResponse({'error': f'{field} is required'}, status=400)
 
-    # 5. Create the database record
+    # 5. Process farming_type (In case they selected multiple checkboxes)
+    farming_data = data.get('farming_type')
+    if isinstance(farming_data, list):
+        # Converts ['Poultry', 'Fish Farming'] into "Poultry, Fish Farming"
+        farming_data = ", ".join(farming_data)
+
+    # 6. Create the database record
     try:
         WaitlistSignup.objects.create(
             full_name=data['full_name'],
             phone_number=data['phone_number'],
             location=data['location'],
             farm_size=data['farm_size'],
-            farming_type=data['farming_type'], 
+            farming_type=farming_data, # Use the processed string here
         )
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
-    # 6. Return success
+    # 7. Return success
     return JsonResponse({
         'success': True,
         'message': 'You have successfully joined the waitlist'
