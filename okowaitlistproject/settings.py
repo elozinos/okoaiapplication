@@ -25,7 +25,23 @@ SECRET_KEY = 'django-insecure-ze#%b^7zbr!6wh_%qht3i57mkf*1ilb7^dgl5%ru+*gt#-qhnb
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "localhost", 
+    "127.0.0.1", 
+    "okoaiapplication.onrender.com"
+]
+
+# This automatically adds Render's internal hostname just in case
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://okoaiapplication.onrender.com"
+]
+[]
 
 
 # Application definition
@@ -121,3 +137,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
